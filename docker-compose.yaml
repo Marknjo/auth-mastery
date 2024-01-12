@@ -4,7 +4,7 @@ services:
     container_name: auth-matery-db
     restart: always
     ports:
-      - 5440:5432
+      - '5440:5432'
     environment:
       - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_USER=${DB_USER}
