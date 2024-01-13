@@ -1,7 +1,7 @@
 'use server';
 
 import { signIn } from '@/auth';
-import { DEFAUTL_LOGIN_REDIRECT } from '@/middleware.rountes';
+import { DEFAUTL_LOGIN_REDIRECT } from '@/middleware.routes';
 import { LoginSchema, TLoginSchema } from '@/schemas';
 import { AuthError } from 'next-auth';
 

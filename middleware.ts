@@ -6,7 +6,7 @@ import {
   authRoutes,
   apiAuthPrefix,
   publicRoutes,
-} from '@/middleware.rountes';
+} from '@/middleware.routes';
 
 const { auth } = NextAuth(authConfig);
 

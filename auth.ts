@@ -12,6 +12,19 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  pages: {
+    signIn: '/auth/login',
+    newUser: '/auth/register',
+    error: '/auth/error',
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date(Date.now()) },
+      });
+    },
+  },
   callbacks: {
     async signIn({ user }) {
       console.log({ user, flag: '⛳⛳⛳⛳' });
@@ -21,9 +34,9 @@ export const {
       console.log('\n🚩🚩 signIn');
       const adapterUser: AdapterUser = user as AdapterUser;
 
-      if (!adapterUser?.emailVerified) {
-        return false;
-      }
+      // if (!adapterUser?.emailVerified) {
+      //   return false;
+      // }
 
       return true;
     },
