@@ -5,6 +5,23 @@ import { isProd } from '@/lib/utils';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  try {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL!,
+      to: email,
+      subject: '2FA Code',
+      html: `<p>Your 2FA code: ${token}<p>`,
+    });
+
+    return {
+      success: "We've set a password reset token to your email",
+    };
+  } catch (error) {
+    return { error: 'Error while trying to verify your account' };
+  }
+};
+
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const url = isProd ? process.env.PROD_URL : process.env.DEV_URL;
   const resetLink = `${url}/auth/new-password?token=${token}`;
