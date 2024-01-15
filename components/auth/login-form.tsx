@@ -22,6 +22,7 @@ import FormError from '@/components/form-error';
 import FormSuccess from '@/components/form-success';
 import { login } from '@/actions/login';
 import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -49,6 +50,10 @@ function LoginForm() {
         .then((data) => {
           setError(data?.error);
           setSuccess(data?.success);
+
+          if (data?.success) {
+            form.reset();
+          }
         })
         .catch(() =>
           setError(
@@ -102,6 +107,13 @@ function LoginForm() {
                       disabled={isPending}
                     />
                   </FormControl>
+                  <Button
+                    size='sm'
+                    variant='link'
+                    className='px-0 font-normal'
+                    asChild>
+                    <Link href='/auth/reset'>Forgot Password?</Link>
+                  </Button>
                   <FormMessage />
                 </FormItem>
               )}

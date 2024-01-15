@@ -43,10 +43,14 @@ function RegisterForm() {
         .then((data) => {
           setError(data?.error);
           setSuccess(data?.success);
+
+          if (data?.success) {
+            form.reset();
+          }
         })
         .catch(() =>
           setError(
-            'Something happenend while tyring to log you in! Please try again.'
+            'Something happened while trying to log you in! Please try again.'
           )
         );
     });

@@ -35,7 +35,7 @@ export const login = async (values: TLoginSchema) => {
     );
 
     if (response.error) {
-      return response;
+      return { error: response.error };
     }
 
     return {
