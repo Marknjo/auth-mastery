@@ -26,17 +26,18 @@ export const {
     },
   },
   callbacks: {
-    async signIn({ user }) {
-      console.log({ user, flag: '⛳⛳⛳⛳' });
+    async signIn({ user, account }) {
+      // Allow OAuth without email verification
+      if (account?.provider !== 'credentials') return true;
 
-      console.log('\n-------------------------------------\n\n');
-
-      console.log('\n🚩🚩 signIn');
       const adapterUser: AdapterUser = user as AdapterUser;
 
-      // if (!adapterUser?.emailVerified) {
-      //   return false;
-      // }
+      // prevent signIn without email verification
+      if (!adapterUser?.emailVerified) {
+        return false;
+      }
+
+      // TODO: add 2fa check
 
       return true;
     },
