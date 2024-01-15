@@ -5,6 +5,7 @@ import authConfig from '@/auth.config';
 import { db } from '@/lib/db';
 import { getUserById } from '@/data/user';
 import { UserRole } from '@prisma/client';
+import { getTwoFactorConfirmationByUserId } from './data/two-factor-confirmation';
 
 export const {
   handlers: { GET, POST },
@@ -37,7 +38,23 @@ export const {
         return false;
       }
 
-      // TODO: add 2fa check
+      // @ts-expect-error - isTwoFactorEnabled is available
+      if (adapterUser.isTwoFactorEnabled) {
+        const twoFactorConfirmation = await getTwoFactorConfirmationByUserId(
+          adapterUser.id
+        );
+
+        if (!twoFactorConfirmation) return false;
+
+        const hasExpired =
+          new Date(twoFactorConfirmation.expires).getTime() < Date.now();
+
+        if (hasExpired) return false;
+
+        await db.twoFactorConfirmation.delete({
+          where: { id: twoFactorConfirmation.id },
+        });
+      }
 
       return true;
     },
