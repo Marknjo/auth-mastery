@@ -14,7 +14,10 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/middleware.routes';
 import { LoginSchema, TLoginSchema } from '@/schemas';
 import { AuthError } from 'next-auth';
 
-export const login = async (values: TLoginSchema) => {
+export const login = async (
+  values: TLoginSchema,
+  callbackUrl: string | null
+) => {
   console.table(values);
   const validatedFields = LoginSchema.safeParse(values);
 
@@ -110,7 +113,7 @@ export const login = async (values: TLoginSchema) => {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT,
     });
     return { success: 'Login details sent' };
   } catch (error) {
