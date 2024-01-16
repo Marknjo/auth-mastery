@@ -6,6 +6,7 @@ import { db } from '@/lib/db';
 import { getUserById } from '@/data/user';
 import { UserRole } from '@prisma/client';
 import { getTwoFactorConfirmationByUserId } from './data/two-factor-confirmation';
+import { getAccountByUserId } from './data/account';
 
 export const {
   handlers: { GET, POST },
@@ -59,7 +60,6 @@ export const {
       return true;
     },
     async session({ session, token }) {
-      console.log('\n🚩🚩 session');
       if (session?.user && token?.sub) {
         session.user.id = token.sub;
       }
@@ -68,19 +68,29 @@ export const {
         session.user.role = token.role as UserRole;
       }
 
+      if (session?.user) {
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
+
+      session.user = {
+        ...session.user,
+        ...token,
+      };
+
       return session;
     },
     async jwt({ token }) {
-      console.log('\n🚩🚩 jwt');
       if (!token?.sub) return token;
 
       const existingUser = await getUserById(token.sub);
 
       if (!existingUser) return token;
 
-      token.role = existingUser.role;
-
-      return token;
+      return {
+        ...token,
+        ...existingUser,
+        isOAuth: !!(await getAccountByUserId(existingUser.id)),
+      };
     },
   },
   adapter: PrismaAdapter(db),
