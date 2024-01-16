@@ -30,6 +30,7 @@ function LoginForm() {
     searchParams.get('error') === 'OAuthAccountNotLinked'
       ? 'Email already in user with another provider!'
       : '';
+  const callbackUrl = searchParams.get('callbackUrl');
 
   const [showTwoFactor, setShowTwoFactor] = useState(false);
   const [error, setError] = useState<string | undefined>('');
@@ -47,7 +48,7 @@ function LoginForm() {
 
   const handleSubmit = (values: TLoginSchema) => {
     startTransition(() => {
-      login(values)
+      login(values, callbackUrl)
         .then((data) => {
           setShowTwoFactor(showTwoFactor);
 
